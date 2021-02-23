@@ -82,8 +82,17 @@ Both of them now cost 2300 gas and that is also subject to change. Use `.call()`
 ## Handle errors in external calls
 Since address calls will never throw an exception, we must define them ourselves as the developers. Most address calls return `false` if the call encounters an exception. Here's what you can do. 
 
-> // bad
-yo my name is nicolas
-and this is ridiculous
+```solidity
+// bad
+someAddress.send(55);
+someAddress.call.value(55)(""); // this is doubly dangerous, as it will forward all remaining gas and doesn't check for result
+someAddress.call.value(100)(bytes4(sha3("deposit()"))); // if deposit throws an exception, the raw call() will only return false and transaction will NOT be reverted
 
-got mad bad gunny bear
+// good
+(bool success, ) = someAddress.call.value(55)("");
+if(!success) {
+    // handle failure code
+}
+
+ExternalContract(someAddress).deposit.value(100)();
+```
