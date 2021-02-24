@@ -53,12 +53,6 @@ Modular contracts are good for simple short-lived contracts while more complex c
 Reusability makes the most sense when you own it and when the trust of previous code is relied on. A blockchain engineer must be vigilante when using a new library that hasn't established trust yet. 
 
 
-## View vs. Pure
-### View
-While both keywords indicate that a function doesn't modify a state, a `view` function will not alter the storage state in any way.
-### Pure
-The `pure` keyword is quite more restrictive as it won't even read the storage state.
-
 # Protocol specific recommendations
 ## External Calls
 Use caution when making external calls, especially to untrusted contracts. EVERY external call should be treated as a potential security risk.
