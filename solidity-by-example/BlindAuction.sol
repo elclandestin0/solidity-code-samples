@@ -108,7 +108,7 @@ contract BlindAuction {
         // Set ended to true ...
         ended = true;
         // ... and transfer thehighest bid  to the beneficiary 
-        beneficiary.transfer(highestBid);
+        beneficiary.transfer(highestBid);                  
     }
 
     function placeBid(address bidder, uint value) 
