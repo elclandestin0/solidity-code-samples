@@ -8,7 +8,7 @@ contract MessageCreator {
         address owner;
     }
 
-    function addPaper(string memory message_) public {
+    function addMessage(string memory message_) public {
         _messages.push(Message(message_, msg.sender));
     }
 
