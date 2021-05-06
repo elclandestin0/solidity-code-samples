@@ -5,7 +5,7 @@ contract SimpleStore {
     // mapping of buyers and products
     mapping(uint256 => address) private _buyers;
     mapping(address => bool) private _didBuy;
-    mapping(uint256 => Product) private _products;
+    Product[] private _products;
 
     // product struct used when creating a product
     struct Product {
@@ -26,7 +26,7 @@ contract SimpleStore {
     uint256 private _productCount;
 
     constructor() {
-        msg.sender == _owner;
+        _owner = msg.sender;
         _productCount = 0;
         _buyerCount = 0;
     }
@@ -35,23 +35,22 @@ contract SimpleStore {
         string memory name_,
         uint256 price_,
         string memory description_
-    ) private onlyOwner {
+    ) public onlyOwner {
         // increment the product count by 1
-        uint256 count_ = _productCount;
-        count_ = count_ + 1;
-        _productCount = count_;
+        if (_products.length > 0) {
+            uint256 count_ = _productCount;
+            count_ = count_ + 1;
+            _productCount = count_ - 1;
+            // get the time created for product using block.timestamp
+            uint256 time_ = block.timestamp;
 
-        // get the time created for product using block.timestamp
-        uint256 time_ = block.timestamp;
-
-        // create a new product variable from Product struct
-        _products[_productCount] = Product(
-            name_,
-            description_,
-            count_,
-            price_,
-            time_
-        );
+            // create a new product variable from Product struct
+            _products.push(Product(name_, description_, count_, price_, time_));
+        } else {
+            uint256 time_ = block.timestamp;
+            // create a new product variable from Product struct
+            _products.push(Product(name_, description_, 0, price_, time_));
+        }
     }
 
     // shopper buys an item
@@ -76,12 +75,13 @@ contract SimpleStore {
     }
 
     // get all products
-    function getProducts() public view returns (Product[] memory) {
-        Product[] memory products = new Product[](_productCount);
-        for (uint256 i = 0; i < _productCount; i++) {
-            products[i] = _products[i];
-        }
-        return products;
+    function products() public view returns (Product[] memory) {
+        return _products;
+    }
+
+    // get balance of store
+    function balance() public view returns (uint256) {
+        return address(this).balance;
     }
 
     modifier onlyOwner() {
